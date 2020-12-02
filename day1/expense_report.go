@@ -18,7 +18,9 @@ func p1(input []int64) {
 	values := [2]int64{0, 0}
 	for _, i := range input {
 		for _, j := range input {
-			if i + j == 2020 {
+			if i == j {
+				continue
+			} else if i + j == 2020 {
 				values[0] = i 
 				values[1] = j
 				break
@@ -38,8 +40,13 @@ func p2(input []int64) {
 	values := [3]int64{0, 0, 0}
 	for _, i := range input {
 		for _, j := range input {
+			if i == j {
+				continue
+			}
 			for _, k := range input {
-				if i + j + k == 2020 {
+				if j == k {
+					continue
+				} else if i + j + k == 2020 {
 					values[0] = i 
 					values[1] = j
 					values[2] = k
