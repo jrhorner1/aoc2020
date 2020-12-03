@@ -32,22 +32,6 @@ func parse() []string {
 	return input
 }
 
-func p1(input []string) {
-	trees := 0
-	pos := 0
-	for _, i := range input {
-		if string(i[pos]) == "#" {
-			trees++
-		}
-		if pos + 3 >= len(i) {
-			pos += 3 - len(i)
-		} else {
-			pos += 3
-		}
-	}
-	fmt.Println("Part 1:", trees)
-}
-
 func checkSlope(mov []int, input []string) int {
 	trees := 0
 	pos := []int{0, 0} // x, y
@@ -68,6 +52,12 @@ func checkSlope(mov []int, input []string) int {
 	return trees
 }
 
+func p1(input []string) {
+	slope := []int{3, 1}
+	trees := checkSlope(slope, input)
+	fmt.Println("Part 1:", trees)
+}
+
 func p2(input []string) {
 	slopes := [][]int{
 		[]int{1, 1},
@@ -85,9 +75,8 @@ func p2(input []string) {
 			product = product * trees[i]
 		}
 	}
-	fmt.Println("Part 1:", product)
+	fmt.Println("Part 2:", product)
 }
-
 
 func main() {
 	input := parse()
