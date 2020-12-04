@@ -2,35 +2,8 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"log"
-	// "strings"
-	// "strconv"
-	"bufio"
+	"../utils"
 )
-
-func check(e error) {
-	if e != nil {
-		log.Fatal(e)
-	}
-}
-
-func parse() []string {
-	file, err := os.Open("input")
-	check(err)
-	defer file.Close()
-	var input []string 
-	scanner := bufio.NewScanner(file) 
-	for scanner.Scan() { 
-		if err := scanner.Err(); err != nil {
-			log.Fatal(err)
-		}
-		text := scanner.Text() 
-		check(err) 
-		input = append(input, text) 
-	}
-	return input
-}
 
 func checkSlope(mov []int, input []string) int {
 	trees := 0
@@ -79,7 +52,7 @@ func p2(input []string) {
 }
 
 func main() {
-	input := parse()
+	input := utils.OpenFile()
 	p1(input)
 	p2(input)
 }
