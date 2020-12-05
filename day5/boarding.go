@@ -42,9 +42,7 @@ func (a ByRowCol) Less(i, j int) bool {
 }
 
 func p1(bps []BoardingPass) {
-	var maxId int64
-	for _, bp := range bps { if bp.Id > maxId { maxId = bp.Id } }
-	fmt.Println("Part 1:", maxId)
+	fmt.Println("Part 1:", bps[len(bps)-1].Id)
 }
 
 func p2(bps []BoardingPass) {
