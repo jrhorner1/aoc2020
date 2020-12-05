@@ -41,24 +41,6 @@ func (a ByRowCol) Less(i, j int) bool {
 	return a[i].Col < a[j].Col 
 }
 
-func p1(bps []BoardingPass) {
-	fmt.Println("Part 1:", bps[len(bps)-1].Id)
-}
-
-func p2(bps []BoardingPass) {
-	var my_bp BoardingPass
-	for i, bp := range bps {
-		if i+2 > len(bps) { 
-			break
-		} else if bps[i+1].Id != bp.Id + 1 && bps[i+1].Id == bp.Id + 2 {
-			my_bp.Id = bp.Id + 1
-			my_bp.Row = bp.Row
-			my_bp.Col = bp.Col + 1
-		}
-	}
-	fmt.Println("Part 2:", my_bp.Id)
-}
-
 func main() {
 	input := utils.OpenFile()
 	var bps []BoardingPass
@@ -68,6 +50,15 @@ func main() {
 		bps = append(bps, pass)
 	}
 	sort.Sort(ByRowCol(bps))
-	p1(bps)
-	p2(bps)
+	fmt.Println("Part 1:", bps[len(bps)-1].Id)
+	var my_bp BoardingPass
+	for i, bp := range bps {
+		if bps[i+1].Id != bp.Id + 1 && bps[i+1].Id == bp.Id + 2 {
+			my_bp.Id = bp.Id + 1
+			my_bp.Row = bp.Row
+			my_bp.Col = bp.Col + 1
+			break
+		}
+	}
+	fmt.Println("Part 2:", my_bp.Id)
 }
