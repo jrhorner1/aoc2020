@@ -2,88 +2,24 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"log"
+	"io/ioutil"
+	"strings"
 	"strconv"
-	"bufio"
 )
 
-func check(e error) {
-	if e != nil {
-		log.Fatal(e)
-	}
-}
-
-func p1(input []int64) {
-	values := [2]int64{0, 0}
-	for _, i := range input {
-		for _, j := range input {
-			if i == j {
-				continue
-			} else if i + j == 2020 {
-				values[0] = i 
-				values[1] = j
-				break
-			} else {
-				continue
-			}
-		}
-		if values[0] != 0 {
-			break
-		}
-	}
-	product := values[0] * values[1]
-	fmt.Println("Part 1", product)
-}
-
-func p2(input []int64) {
-	values := [3]int64{0, 0, 0}
-	for _, i := range input {
-		for _, j := range input {
-			if i == j {
-				continue
-			}
-			for _, k := range input {
-				if j == k {
-					continue
-				} else if i + j + k == 2020 {
-					values[0] = i 
-					values[1] = j
-					values[2] = k
-					break
-				} else {
-					continue
-				}
-			}
-			if values[1] != 0 {
-				break
-			}
-		}
-		if values[0] != 0 {
-			break
-		}
-	}
-	product := values[0] * values[1] * values[2]
-	fmt.Println("Part 2", product)
-}
-
 func main() {
-	file, err := os.Open("input")
-	check(err)
-	defer file.Close()
-
-	var input []int64 // nil slice
-	scanner := bufio.NewScanner(file) // open the file
-	for scanner.Scan() { // scan each line
-		num, err := strconv.ParseInt(scanner.Text(), 10, 64) // parse the text to int type
-		check(err) // check for any parsing errors
-		input = append(input, num) // append the value to the slice
+	input, _ := ioutil.ReadFile("input")
+	entries := []int{}
+	for _, i := range strings.Fields(string(input)) {
+		entry, _ := strconv.Atoi(i)
+		entries = append(entries, entry)
 	}
-
-	p1(input)
-	p2(input)
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+	for i, x := range entries {
+		for j, y := range entries[i+1:] {
+			if x + y == 2020 { fmt.Println("Part 1:", x * y) }
+			for _, z := range entries[j+1:] {
+				if x + y + z == 2020 { fmt.Println("Part 2:", x * y * z) }
+			}
+		}  
 	}
 }
