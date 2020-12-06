@@ -34,7 +34,7 @@ func p2(answers []string) {
 			if v { count++}
 		}
 	}
-	fmt.Println("Part 1:",count)
+	fmt.Println("Part 2:",count)
 }
 
 func main() {
