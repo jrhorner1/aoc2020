@@ -2,110 +2,32 @@ package main
 
 import (
 	"fmt"
-	"../utils"
+	"io/ioutil"
 	"strings"
-	"strconv"
 	"regexp"
 )
 
-func parse(input string) [][]string {
-	var passport [][]string
-	fields := strings.Fields(input)
-	for _, field := range fields {
-		kv := strings.Split(field, ":")
-		passport = append(passport, kv)
-	}
-	return passport
-}
-
-func validate(passports []string) (int, int) {
-	v1 := 0
-	v2 := 0
-	for _, passport := range passports {
-		ppp := parse(passport)
-		p1 := 0
-		p2 := []bool{false, false, false, false, false, false, false}
-		for _, kv := range ppp { 
-			switch kv[0] {
-			case "byr": // birth year - four digits; at least 1920 and at most 2002
-				p1++
-				year, _ := strconv.Atoi(kv[1])
-				if !( year < 1920 || year > 2002 ) {
-					p2[0] = true
-				}
-			case "iyr": // issue year - four digits; at least 2010 and at most 2020
-				p1++
-				year, _ := strconv.Atoi(kv[1])
-				if !( year < 2010 || year > 2020 ) {
-					p2[1] = true
-				}
-			case "eyr": // expiration year - four digits; at least 2020 and at most 2030
-				p1++
-				year, _ := strconv.Atoi(kv[1])
-				if !( year < 2020 || year > 2030 ) {
-					p2[2] = true
-				}
-			case "hgt": // height - a number followed by either cm or in:
-						// If cm, the number must be at least 150 and at most 193.
-						// If in, the number must be at least 59 and at most 76.
-				p1++
-				value := kv[1][:len(kv[1])-2] 
-				height, _ := strconv.Atoi(value)
-				unit := kv[1][len(kv[1])-2:]
-				switch unit {
-				case "cm": 
-					if !( height < 150 || height > 193 ) {
-						p2[3] = true
-					}
-				case "in":
-					if !( height < 59 || height > 76 ) {
-						p2[3] = true
-					}
-				}
-			case "hcl": // hair color - a # followed by exactly six characters 0-9 or a-f.
-				p1++
-				match, _ := regexp.MatchString("^#[0-9a-f]{6}$", kv[1])
-				if match {
-					p2[4] = true
-				}
-			case "ecl": // eye color - exactly one of: amb blu brn gry grn hzl oth.
-				p1++
-				match, _ := regexp.MatchString("^(amb|blu|brn|gry|grn|hzl|oth)$", kv[1])
-				if match {
-					p2[5] = true
-				}
-			case "pid": // passport ID - a nine-digit number, including leading zeroes.
-				p1++
-				match, _ := regexp.MatchString("^[0-9]{9}$", kv[1])
-				if match {
-					p2[6] = true
-				}
-			case "cid": // country ID - ignored, missing or not
-				continue
-			default: // undefined fields
-				continue
-			}
-		}
-		if p1 == 7 {
-			v1++
-		} 
-		check := 0
-		for _, i := range p2 {
-			if i {
-				check++
-			}
-		}
-		if check == 7 {
-			v2++
-		}
-	}
-	return v1, v2
-}
+var regs = []*regexp.Regexp{
+	regexp.MustCompile(`(?:^|\s)(byr):(?:(19[2-9]\d|200[0-2])(?:\s|$))?`),
+	regexp.MustCompile(`(?:^|\s)(iyr):(?:(201\d|2020)(?:\s|$))?`),
+	regexp.MustCompile(`(?:^|\s)(eyr):(?:(202\d|2030)(?:\s|$))?`),
+	regexp.MustCompile(`(?:^|\s)(hgt):(?:((?:1[5-8]\d|19[0-3])cm|(?:59|6\d|7[0-6])in)(?:\s|$))?`),
+	regexp.MustCompile(`(?:^|\s)(hcl):(?:(#[\da-f]{6})(?:\s|$))?`),
+	regexp.MustCompile(`(?:^|\s)(ecl):(?:(amb|blu|brn|gry|grn|hzl|oth)(?:\s|$))?`),
+	regexp.MustCompile(`(?:^|\s)(pid):(?:(\d{9})(?:\s|$))?`) }
 
 func main() {
-	input := utils.ReadFile("input")
-	passports := strings.Split(strings.Replace(input, " ", "\n", -1), "\n\n")
-	valid, verified := validate(passports)
-	fmt.Println("Part 1:", valid)
-	fmt.Println("Part 2:", verified)
+	input, _ := ioutil.ReadFile("input")
+	p1, p2 := 0, 0
+	for _, pp := range strings.Split(strings.TrimSpace(string(input)), "\n\n") {
+		d1, d2 := 1, 1
+		for _, reg := range regs {
+			if m := reg.FindStringSubmatch(pp); len(m) == 0 { 
+				d1, d2 = 0, 0 
+			} else if m[2] == "" { d2 = 0 }
+		}
+		p1, p2 = p1 + d1, p2 + d2 
+	}
+	fmt.Println("Part 1:", p1)
+	fmt.Println("Part 2:", p2)
 }

@@ -2,19 +2,11 @@ package main
 
 import (
 	"fmt"
-	"../utils"
+	"io/ioutil"
 )
 
-func p1(input []string) {
-
-}
-
-func p2(input []string) {
-	
-}
-
 func main() {
-	input := utils.OpenFile()
-	p1(input)
-	p2(input)
+	input, _ := ioutil.ReadFile("input")
+	// fmt.Println("Part 1:", input)
+	// fmt.Println("Part 2:", input)
 }
